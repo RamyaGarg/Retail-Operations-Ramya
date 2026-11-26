@@ -1,9 +1,10 @@
 import React from 'react';
 import { NavLink } from 'react-router-dom';
-import { FiHome, FiDollarSign, FiFileText, FiUpload, FiCpu, FiServer, FiChevronLeft } from 'react-icons/fi';
+import { FiHome, FiDollarSign, FiFileText, FiUpload, FiCpu, FiServer, FiChevronLeft, FiTarget, FiBarChart2 } from 'react-icons/fi';
 
 const navItems = [
   { path: '/dashboard', label: 'Dashboard', icon: FiHome },
+  { path: '/sales-hub', label: 'Sales Hub', icon: FiBarChart2 },
   { path: '/reconciliation', label: 'Reconciliation', icon: FiDollarSign },
   { path: '/pricing', label: 'Price Management', icon: FiFileText },
   { path: '/connectors', label: 'Data Ingestion', icon: FiUpload },

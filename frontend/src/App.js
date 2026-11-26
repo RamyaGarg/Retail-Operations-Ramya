@@ -9,6 +9,7 @@ import PricingPage from './pages/PricingPage';
 import ConnectorsPage from './pages/ConnectorsPage';
 import AIPage from './pages/AIPage';
 import HubPage from './pages/HubPage';
+import SalesHubDashboard from './pages/SalesHubDashboard';
 
 function App() {
   const [sidebarOpen, setSidebarOpen] = useState(false);
@@ -78,6 +79,7 @@ function App() {
             <Routes>
               <Route path="/" element={<Navigate to="/dashboard" replace />} />
               <Route path="/dashboard" element={<DashboardPage storeId={currentStore} dateRange={dateRange} />} />
+              <Route path="/sales-hub" element={<SalesHubDashboard storeId={currentStore} dateRange={dateRange} onDateRangeChange={setDateRange} />} />
               <Route path="/reconciliation" element={<ReconciliationPage storeId={currentStore} dateRange={dateRange} />} />
               <Route path="/pricing" element={<PricingPage storeId={currentStore} dateRange={dateRange} />} />
               <Route path="/connectors" element={<ConnectorsPage />} />

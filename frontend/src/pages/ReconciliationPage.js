@@ -102,7 +102,7 @@ function ShiftSummariesTable({ summaries }) {
       </div>
       <div className="card-body" style={{ padding: 0 }}>
         <div className="table-container">
-          <table>
+          <table className="reconciliation">
             <thead>
               <tr>
                 <th>Date</th>
@@ -164,7 +164,7 @@ function EODSummariesTable({ summaries }) {
       </div>
       <div className="card-body" style={{ padding: 0 }}>
         <div className="table-container">
-          <table>
+          <table className="reconciliation">
             <thead>
               <tr>
                 <th>Date</th>
@@ -218,7 +218,7 @@ function CashVarianceTable({ report }) {
       </div>
       <div className="card-body" style={{ padding: 0 }}>
         <div className="table-container">
-          <table>
+          <table className="reconciliation">
             <thead>
               <tr>
                 <th>Date</th>
@@ -270,7 +270,7 @@ function DiscrepanciesTable({ list }) {
       </div>
       <div className="card-body" style={{ padding: 0 }}>
         <div className="table-container">
-          <table>
+          <table className="reconciliation">
             <thead>
               <tr>
                 <th>Date</th>

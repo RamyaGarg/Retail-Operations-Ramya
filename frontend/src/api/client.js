@@ -34,6 +34,15 @@ export const dashboardApi = {
   getDepartmentPerformance: (params) => api.get('/dashboard/department-performance', { params }),
   getHourlyHeatmap: (params) => api.get('/dashboard/hourly-heatmap', { params }),
   getTenderMix: (params) => api.get('/dashboard/tender-mix', { params }),
+
+  // Microsoft Dynamics 365 Sales Hub-like features
+  getSalesTargets: (params) => api.get('/dashboard/targets', { params }),
+  getPeriodComparison: (params) => api.get('/dashboard/period-comparison', { params }),
+  getPromotions: (params) => api.get('/dashboard/promotions', { params }),
+  getStaffPerformance: (params) => api.get('/dashboard/staff-performance', { params }),
+  getForecast: (params) => api.get('/dashboard/forecast', { params }),
+  getCustomerMetrics: (params) => api.get('/dashboard/customer-metrics', { params }),
+  getExecutiveScorecard: (params) => api.get('/dashboard/executive-scorecard', { params }),
 };
 
 export const reconciliationApi = {

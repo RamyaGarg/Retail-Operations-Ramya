@@ -356,6 +356,43 @@ th, td {
   font-size: 13px;
 }
 
+/* Fixed-layout reconciliation tables: consistent widths, no wrapping */
+table.reconciliation {
+  table-layout: fixed;
+}
+
+table.reconciliation th,
+table.reconciliation td {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  vertical-align: middle;
+}
+
+/* Reconciliation table column widths */
+table.reconciliation th:nth-child(1),
+table.reconciliation td:nth-child(1) { width: 12%; }   /* Date */
+table.reconciliation th:nth-child(2),
+table.reconciliation td:nth-child(2) { width: 20%; }   /* Store */
+table.reconciliation th:nth-child(3),
+table.reconciliation td:nth-child(3) { width: 13%; }   /* Numeric */
+table.reconciliation th:nth-child(4),
+table.reconciliation td:nth-child(4) { width: 13%; }   /* Numeric */
+table.reconciliation th:nth-child(5),
+table.reconciliation td:nth-child(5) { width: 12%; }   /* Numeric */
+table.reconciliation th:nth-child(6),
+table.reconciliation td:nth-child(6) { width: 12%; }   /* Numeric */
+table.reconciliation th:nth-child(7),
+table.reconciliation td:nth-child(7) { width: 12%; }   /* Numeric */
+table.reconciliation th:nth-child(8),
+table.reconciliation td:nth-child(8) { width: 12%; }   /* Numeric */
+table.reconciliation th:nth-child(9),
+table.reconciliation td:nth-child(9) { width: 12%; }   /* Numeric */
+table.reconciliation th:nth-child(10),
+table.reconciliation td:nth-child(10) { width: 12%; }  /* Variance */
+table.reconciliation th:nth-child(11),
+table.reconciliation td:nth-child(11) { width: 14%; }  /* Status */
+
 th {
   background: var(--background);
   font-weight: 600;
