@@ -14,8 +14,10 @@ from database.db import get_db
 
 router = APIRouter()
 
-INBOX_DIR = Path(__file__).parent.parent.parent.parent / "inbox"
-OUTBOX_DIR = Path(__file__).parent.parent.parent.parent / "outbox"
+# Data package lives at <assignment root>/data_package_extracted/data_package (4 levels up)
+DATA_PACKAGE_DIR = Path(__file__).parent.parent.parent.parent / "data_package_extracted" / "data_package"
+INBOX_DIR = DATA_PACKAGE_DIR / "inbox"
+OUTBOX_DIR = DATA_PACKAGE_DIR / "outbox"
 
 
 class InvoiceItem(BaseModel):

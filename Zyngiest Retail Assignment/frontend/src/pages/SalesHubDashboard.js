@@ -483,7 +483,7 @@ function OverviewTab({ executiveScorecard, salesTrend, forecast, tenderMix, topI
   return (
     <>
       {/* Executive Scorecard Alerts */}
-      {executiveScorecard && executiveScorecard.alerts.length > 0 && (
+      {executiveScorecard?.alerts?.length > 0 && (
         <div className="card" style={{ marginBottom: '24px', borderLeft: '4px solid var(--warning)' }}>
           <div className="card-body" style={{ padding: '16px 24px' }}>
             <div style={{ display: 'flex', alignItems: 'flex-start', gap: '12px' }}>
@@ -883,7 +883,7 @@ export default function SalesHubDashboard({ storeId, dateRange, onDateRangeChang
         <KpiCard
           icon={<FiPercent size={24} />}
           label="Gross Margin"
-          value={executiveScorecard ? `£${formatCurrency(executiveScorecard.margin.gross_margin)} (${executiveScorecard.margin.margin_pct}%)` : (kpis ? `£${formatCurrency(kpis.gross_margin)}` : '—')}
+          value={executiveScorecard?.margin ? `£${formatCurrency(executiveScorecard.margin.gross_margin)} (${executiveScorecard.margin.margin_pct}%)` : (kpis ? `£${formatCurrency(kpis.gross_margin)}` : '—')}
           color="#8e44ad"
         />
         <KpiCard

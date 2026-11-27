@@ -1,13 +1,20 @@
 import sqlite3
 import os
+import csv
+from pathlib import Path
 
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 DB_PATH = os.path.join(BASE_DIR, "retail.db")
+
+# Path to data package - 3 levels up from this file + data_package_extracted/data_package
+DATA_PACKAGE_DIR = Path(__file__).parent.parent.parent / "data_package_extracted" / "data_package"
+
 
 def get_db():
     conn = sqlite3.connect(DB_PATH)
     conn.row_factory = sqlite3.Row
     return conn
+
 
 def init_db():
     conn = get_db()
@@ -183,55 +190,101 @@ def init_db():
     );
     """)
 
-    # Seed data if empty
     cursor.execute("SELECT COUNT(*) FROM stores;")
     if cursor.fetchone()[0] == 0:
-        cursor.executescript("""
-        INSERT INTO stores (id, name, location) VALUES (1, 'Brightleaf Downtown', '123 Main St');
-        INSERT INTO stores (id, name, location) VALUES (2, 'Brightleaf Uptown', '456 Oak Ave');
-
-        INSERT INTO departments (id, name, tax_group) VALUES (1, 'Coffee', 'tax_0');
-        INSERT INTO departments (id, name, tax_group) VALUES (2, 'Groceries', 'tax_8');
-        INSERT INTO departments (id, name, tax_group) VALUES (3, 'Household', 'tax_5');
-
-        INSERT INTO staff (id, store_id, name, role) VALUES ('STF001', 1, 'Alice Johnson', 'cashier');
-        INSERT INTO staff (id, store_id, name, role) VALUES ('STF002', 1, 'Bob Smith', 'manager');
-        INSERT INTO staff (id, store_id, name, role) VALUES ('STF003', 1, 'Carol Davis', 'cashier');
-        INSERT INTO staff (id, store_id, name, role) VALUES ('STF004', 2, 'David Lee', 'cashier');
-        INSERT INTO staff (id, store_id, name, role) VALUES ('STF005', 2, 'Eve Chen', 'manager');
-
-        INSERT INTO devices (store_id, id, type, name) VALUES (1, 'REG001', 'counter', 'Front Counter');
-        INSERT INTO devices (store_id, id, type, name) VALUES (1, 'KIOSK001', 'selfcheckout', 'SelfCheckout 1');
-        INSERT INTO devices (store_id, id, type, name) VALUES (1, 'REG002', 'counter', 'Side Counter');
-        INSERT INTO devices (store_id, id, type, name) VALUES (2, 'REG001', 'counter', 'Front Counter');
-        INSERT INTO devices (store_id, id, type, name) VALUES (2, 'KIOSK001', 'selfcheckout', 'SelfCheckout 1');
-        INSERT INTO devices (store_id, id, type, name) VALUES (2, 'REG002', 'counter', 'Side Counter');
-
-        INSERT INTO items (item_code, variant_code, description, department_id, price, tax_group, cost) VALUES ('ITM001', 'REG', 'Espresso', 1, '2.5000', 'tax_0', '0.8000');
-        INSERT INTO items (item_code, variant_code, description, department_id, price, tax_group, cost) VALUES ('ITM002', 'REG', 'Cappuccino', 1, '3.2500', 'tax_0', '1.0000');
-        INSERT INTO items (item_code, variant_code, description, department_id, price, tax_group, cost) VALUES ('ITM003', 'REG', 'Latte', 1, '3.7500', 'tax_0', '1.2000');
-        INSERT INTO items (item_code, variant_code, description, department_id, price, tax_group, cost) VALUES ('ITM004', 'REG', 'Bagel Cream Cheese', 1, '1.9900', 'tax_0', '0.5000');
-        INSERT INTO items (item_code, variant_code, description, department_id, price, tax_group, cost) VALUES ('ITM001', 'LGT', 'Espresso Large', 1, '3.0000', 'tax_0', '1.0000');
-        INSERT INTO items (item_code, variant_code, description, department_id, price, tax_group, cost) VALUES ('MIL001', 'REG', 'Milk 1L', 2, '2.4900', 'tax_8', '1.5000');
-        INSERT INTO items (item_code, variant_code, description, department_id, price, tax_group, cost) VALUES ('BAN001', 'REG', 'Bananas 1lb', 2, '0.7900', 'tax_8', '0.3000');
-        INSERT INTO items (item_code, variant_code, description, department_id, price, tax_group, cost) VALUES ('BAN002', 'REG', 'Bananas 2lb', 2, '1.4900', 'tax_8', '0.5500');
-        INSERT INTO items (item_code, variant_code, description, department_id, price, tax_group, cost) VALUES ('DRK001', 'REG', 'Coke 2L', 2, '2.9900', 'tax_8', '1.8000');
-        INSERT INTO items (item_code, variant_code, description, department_id, price, tax_group, cost) VALUES ('HOH001', 'REG', 'Toothpaste 4oz', 3, '4.9900', 'tax_5', '2.5000');
-        INSERT INTO items (item_code, variant_code, description, department_id, price, tax_group, cost) VALUES ('HOH002', 'REG', 'Shampoo 8oz', 3, '6.9900', 'tax_5', '3.5000');
-        INSERT INTO items (item_code, variant_code, description, department_id, price, tax_group, cost) VALUES ('SNK001', 'REG', 'Chips 11oz', 2, '1.9900', 'tax_8', '0.8000');
-        INSERT INTO items (item_code, variant_code, description, department_id, price, tax_group, cost) VALUES ('SOD001', 'REG', 'Soda 12pk', 2, '4.9900', 'tax_8', '2.5000');
-        INSERT INTO items (item_code, variant_code, description, department_id, price, tax_group, cost) VALUES ('SOD002', 'REG', 'Soda 6pk', 2, '3.4900', 'tax_8', '1.8000');
-        INSERT INTO items (item_code, variant_code, description, department_id, price, tax_group, cost) VALUES ('CND001', 'REG', 'Canned Beans', 2, '1.2900', 'tax_8', '0.6000');
-        INSERT INTO items (item_code, variant_code, description, department_id, price, tax_group, cost) VALUES ('FRD001', 'REG', 'Apple 3lb Bag', 2, '3.9900', 'tax_8', '2.0000');
-        INSERT INTO items (item_code, variant_code, description, department_id, price, tax_group, cost) VALUES ('HOU001', 'REG', 'Soap Bar', 3, '2.4900', 'tax_5', '1.0000');
-        INSERT INTO items (item_code, variant_code, description, department_id, price, tax_group, cost) VALUES ('HOU002', 'REG', 'Dish Soap', 3, '3.9900', 'tax_5', '1.5000');
-
-        INSERT INTO business_accounts (account_number, name, credit_limit) VALUES ('ACC001', 'Local Café', '1000.0000');
-        INSERT INTO business_accounts (account_number, name, credit_limit) VALUES ('ACC002', 'Corner Deli', '500.0000');
-        """)
+        _load_master_data(cursor)
 
     conn.commit()
     conn.close()
+
+
+def _load_master_data(cursor):
+    """Load master data from data package CSV files"""
+
+    # Create a mapping for store IDs (BL01 code -> numeric ID)
+    store_id_map = {}
+
+    # Load stores
+    stores_path = DATA_PACKAGE_DIR / "master" / "stores.csv"
+    if stores_path.exists():
+        with open(stores_path, 'r') as f:
+            reader = csv.DictReader(f)
+            for i, row in enumerate(reader, start=1):
+                store_code = row['store_id']
+                name = row['store_name']
+                address = f"{row.get('address', '')}, {row.get('city', '')}, {row.get('state', '')}"
+
+                cursor.execute(
+                    "INSERT INTO stores (id, name, location) VALUES (?, ?, ?)",
+                    (i, name, address)
+                )
+                store_id_map[store_code] = i
+
+    # Load staff - use staff_id from CSV directly (201-204 for BL01, 301-302 for BL02)
+    staff_path = DATA_PACKAGE_DIR / "master" / "staff.csv"
+    if staff_path.exists():
+        with open(staff_path, 'r') as f:
+            reader = csv.DictReader(f)
+            for row in reader:
+                store_code = row['store_id']
+                staff_code = row['staff_id']
+
+                cursor.execute(
+                    "INSERT INTO staff (id, store_id, name, role) VALUES (?, ?, ?, ?)",
+                    (staff_code, store_id_map.get(store_code), row['name'], row['role'])
+                )
+
+    # Load devices
+    devices_path = DATA_PACKAGE_DIR / "master" / "devices.csv"
+    if devices_path.exists():
+        with open(devices_path, 'r') as f:
+            reader = csv.DictReader(f)
+            for row in reader:
+                store_code = row['store_id']
+                device_id = row['device_id']
+                device_type = row['device_type'].lower()  # counter, selfcheckout
+                display_name = row['display_name']
+
+                cursor.execute(
+                    "INSERT INTO devices (store_id, id, type, name) VALUES (?, ?, ?, ?)",
+                    (store_id_map.get(store_code), device_id, device_type, display_name)
+                )
+
+    # Load business accounts
+    biz_accounts_path = DATA_PACKAGE_DIR / "business_accounts.csv"
+    if biz_accounts_path.exists():
+        with open(biz_accounts_path, 'r') as f:
+            reader = csv.DictReader(f)
+            for row in reader:
+                cursor.execute(
+                    "INSERT INTO business_accounts (account_number, name, credit_limit) VALUES (?, ?, ?)",
+                    (row['account_id'], row['business_name'], row['credit_limit'])
+                )
+
+
+def reset_and_load_master_data():
+    """Reset database to clean state and load only master data from data package"""
+    conn = get_db()
+    cursor = conn.cursor()
+
+    # Clear tables in reverse FK order
+    for table in ['business_account_activity', 'transaction_tenders', 'transaction_lines',
+                   'transactions', 'shift_summaries', 'eod_summaries', 'price_changes',
+                   'sales_targets', 'promotions', 'items', 'devices', 'staff',
+                   'departments', 'stores', 'business_accounts']:
+        cursor.execute(f"DELETE FROM {table}")
+
+    # Clear imports and load fresh
+    cursor.execute("DELETE FROM imports")
+
+    # Clear and reload master data
+    cursor.execute("DELETE FROM business_accounts")
+    _load_master_data(cursor)
+
+    conn.commit()
+    conn.close()
+    print("Master data loaded from data package into existing database")
+
 
 if __name__ == '__main__':
     init_db()

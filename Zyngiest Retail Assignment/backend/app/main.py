@@ -42,6 +42,8 @@ app.add_middleware(
 # Include routers
 app.include_router(connectors_router, prefix="/api/connectors", tags=["connectors"])
 app.include_router(dashboard_router, prefix="/api/dashboard", tags=["dashboard"])
+# Sales Hub alias: /api/dashboard/sales-hub/* mirrors /api/dashboard/*
+app.include_router(dashboard_router, prefix="/api/dashboard/sales-hub", tags=["dashboard-sales-hub"])
 app.include_router(reconciliation_router, prefix="/api/reconciliation", tags=["reconciliation"])
 app.include_router(pricing_router, prefix="/api/pricing", tags=["pricing"])
 app.include_router(ai_router, prefix="/api/ai", tags=["ai"])
