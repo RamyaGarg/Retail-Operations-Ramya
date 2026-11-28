@@ -80,6 +80,11 @@ nose2-json.xml
 local_settings.py
 settings_local.py
 
-# Data directories
-inbox/
-outbox/
+# Data directories (runtime-generated, repo root only)
+/inbox/
+/outbox/
+/invoices/
+
+# NOTE: "Zyngiest Retail Assignment/data_package_extracted/" ships synthetic
+# fixtures that ARE tracked (required for the app to run). Nothing in there
+# is ignored.

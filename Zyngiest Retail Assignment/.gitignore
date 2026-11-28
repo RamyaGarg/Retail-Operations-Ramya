@@ -80,6 +80,9 @@ nose2-json.xml
 local_settings.py
 settings_local.py
 
-# Data directories
-inbox/
-outbox/
+# Data directories (runtime generated)
+/inbox/
+/outbox/
+/invoices/
+/backend/outbox/
+!data_package_extracted/
