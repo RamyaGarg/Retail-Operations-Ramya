@@ -1,0 +1,523 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ER Diagram - Retail Operations Platform</title>
+  <style>
+    :root {
+      --bg: #0d1117;
+      --bg-secondary: #161b22;
+      --fg: #e6edf3;
+      --fg-muted: #8b949e;
+      --primary: #58a6ff;
+      --primary-hover: #79b8ff;
+      --border: #30363d;
+      --table-header: #1f2428;
+      --pk-color: #f78166;
+      --fk-color: #a5d6ff;
+      --accent-green: #3fb950;
+      --accent-yellow: #d29922;
+    }
+
+    @media (prefers-color-scheme: light) {
+      :root {
+        --bg: #ffffff;
+        --bg-secondary: #f6f8fa;
+        --fg: #24292f;
+        --fg-muted: #656d76;
+        --primary: #0969da;
+        --primary-hover: #0550ae;
+        --border: #d0d7de;
+        --table-header: #f3f4f6;
+        --pk-color: #cf222e;
+        --fk-color: #0969da;
+        --accent-green: #2da44e;
+        --accent-yellow: #9a6700;
+      }
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      padding: 24px;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif;
+      background: var(--bg);
+      color: var(--fg);
+      min-height: 100vh;
+    }
+
+    .container {
+      max-width: 1400px;
+      margin: 0 auto;
+    }
+
+    h1 {
+      font-size: 28px;
+      font-weight: 600;
+      margin-bottom: 8px;
+    }
+
+    .subtitle {
+      color: var(--fg-muted);
+      margin-bottom: 32px;
+    }
+
+    .legend {
+      display: flex;
+      gap: 24px;
+      flex-wrap: wrap;
+      margin-bottom: 24px;
+      padding: 16px;
+      background: var(--bg-secondary);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+    }
+
+    .legend-item {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 13px;
+    }
+
+    .legend-color {
+      width: 16px;
+      height: 16px;
+      border-radius: 3px;
+      border: 1px solid var(--border);
+    }
+
+    .diagram {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+      gap: 24px;
+    }
+
+    .table-card {
+      background: var(--bg-secondary);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      overflow: hidden;
+      transition: box-shadow 0.2s;
+    }
+
+    .table-card:hover {
+      box-shadow: 0 8px 24px rgba(0,0,0,0.3);
+    }
+
+    .table-header {
+      background: var(--table-header);
+      padding: 12px 16px;
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .table-name {
+      font-weight: 600;
+      font-size: 15px;
+    }
+
+    .table-category {
+      font-size: 11px;
+      padding: 2px 8px;
+      border-radius: 10px;
+      background: var(--primary);
+      color: white;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    .column-list {
+      list-style: none;
+      margin: 0;
+      padding: 0;
+    }
+
+    .column {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 8px 16px;
+      border-bottom: 1px solid var(--border);
+      font-size: 13px;
+      font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace;
+    }
+
+    .column:last-child {
+      border-bottom: none;
+    }
+
+    .col-icon {
+      width: 18px;
+      height: 18px;
+      border-radius: 3px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 10px;
+      font-weight: bold;
+      flex-shrink: 0;
+    }
+
+    .col-icon.pk { background: var(--pk-color); color: white; }
+    .col-icon.fk { background: var(--fk-color); color: white; }
+    .col-icon.regular { background: var(--border); color: var(--fg-muted); }
+
+    .col-name { flex: 1; }
+    .col-type { color: var(--fg-muted); font-size: 11px; }
+    .col-nullable { color: var(--accent-yellow); font-size: 10px; }
+
+    .relationships {
+      margin-top: 32px;
+      padding: 24px;
+      background: var(--bg-secondary);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+    }
+
+    .relationships h2 {
+      font-size: 18px;
+      margin-top: 0;
+      margin-bottom: 16px;
+    }
+
+    .rel-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+      gap: 12px;
+    }
+
+    .rel-item {
+      padding: 10px 14px;
+      background: var(--bg);
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      font-size: 13px;
+      font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace;
+    }
+
+    .rel-item .fk { color: var(--fk-color); }
+    .rel-item .pk { color: var(--pk-color); }
+    .rel-item .arrow { color: var(--fg-muted); margin: 0 8px; }
+
+    .composite-note {
+      margin-top: 16px;
+      padding: 12px;
+      background: rgba(210, 153, 34, 0.1);
+      border: 1px solid var(--accent-yellow);
+      border-radius: 6px;
+      font-size: 13px;
+    }
+
+    .composite-note strong { color: var(--accent-yellow); }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>Entity-Relationship Diagram</h1>
+    <p class="subtitle">Multi-Store Retail Operations Platform — SQLite Database Schema</p>
+
+    <div class="legend">
+      <div class="legend-item"><span class="legend-color pk-color" style="background: var(--pk-color);"></span> Primary Key</div>
+      <div class="legend-item"><span class="legend-color fk-color" style="background: var(--fk-color);"></span> Foreign Key</div>
+      <div class="legend-item"><span class="legend-color" style="background: var(--border);"></span> Regular Column</div>
+      <div class="legend-item"><span style="color: var(--accent-yellow);">◆</span> Nullable</div>
+    </div>
+
+    <div class="diagram" id="diagram"></div>
+
+    <div class="relationships">
+      <h2>Key Relationships</h2>
+      <div class="rel-grid" id="relationships"></div>
+
+      <div class="composite-note">
+        <strong>Note on Composite Primary Keys:</strong> This schema uses composite primary keys extensively to support multi-store device independence.
+        Key examples: <code>devices(store_id, id)</code>, <code>price_list(store_id, item_code, variant_code, effective_date)</code>,
+        <code>transaction_lines(transaction_id, line_number)</code>. Foreign keys reference the full composite key where applicable.
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const schema = {
+      // Core reference tables
+      stores: {
+        category: "Core",
+        columns: [
+          { name: "id", type: "INTEGER", pk: true, fk: false, nullable: false },
+          { name: "name", type: "TEXT", pk: false, fk: false, nullable: false },
+          { name: "address", type: "TEXT", pk: false, fk: false, nullable: true },
+          { name: "phone", type: "TEXT", pk: false, fk: false, nullable: true },
+          { name: "timezone", type: "TEXT", pk: false, fk: false, nullable: false, default: "'UTC'" },
+          { name: "currency", type: "TEXT", pk: false, fk: false, nullable: false, default: "'GBP'" },
+          { name: "created_at", type: "TEXT", pk: false, fk: false, nullable: false, default: "CURRENT_TIMESTAMP" },
+        ]
+      },
+      departments: {
+        category: "Core",
+        columns: [
+          { name: "id", type: "INTEGER", pk: true, fk: false, nullable: false },
+          { name: "name", type: "TEXT", pk: false, fk: false, nullable: false },
+          { name: "description", type: "TEXT", pk: false, fk: false, nullable: true },
+          { name: "tax_group", type: "TEXT", pk: false, fk: false, nullable: false, default: "'STANDARD'" },
+        ]
+      },
+      items: {
+        category: "Core",
+        columns: [
+          { name: "item_code", type: "TEXT", pk: true, fk: false, nullable: false },
+          { name: "department_id", type: "INTEGER", pk: false, fk: true, nullable: false, ref: "departments(id)" },
+          { name: "description", type: "TEXT", pk: false, fk: false, nullable: false },
+          { name: "base_uom", type: "TEXT", pk: false, fk: false, nullable: false, default: "'EA'" },
+          { name: "cost_price", type: "TEXT", pk: false, fk: false, nullable: true },
+          { name: "is_active", type: "INTEGER", pk: false, fk: false, nullable: false, default: "1" },
+        ]
+      },
+      item_variants: {
+        category: "Core",
+        columns: [
+          { name: "item_code", type: "TEXT", pk: true, fk: true, nullable: false, ref: "items(item_code)" },
+          { name: "variant_code", type: "TEXT", pk: true, fk: false, nullable: false },
+          { name: "description", type: "TEXT", pk: false, fk: false, nullable: false },
+          { name: "barcode", type: "TEXT", pk: false, fk: false, nullable: true },
+          { name: "size", type: "TEXT", pk: false, fk: false, nullable: true },
+          { name: "color", type: "TEXT", pk: false, fk: false, nullable: true },
+        ]
+      },
+      staff: {
+        category: "Core",
+        columns: [
+          { name: "id", type: "INTEGER", pk: true, fk: false, nullable: false },
+          { name: "store_id", type: "INTEGER", pk: false, fk: true, nullable: false, ref: "stores(id)" },
+          { name: "first_name", type: "TEXT", pk: false, fk: false, nullable: false },
+          { name: "last_name", type: "TEXT", pk: false, fk: false, nullable: false },
+          { name: "role", type: "TEXT", pk: false, fk: false, nullable: false },
+          { name: "pin_hash", type: "TEXT", pk: false, fk: false, nullable: false },
+          { name: "is_active", type: "INTEGER", pk: false, fk: false, nullable: false, default: "1" },
+        ]
+      },
+      devices: {
+        category: "Core",
+        columns: [
+          { name: "store_id", type: "INTEGER", pk: true, fk: true, nullable: false, ref: "stores(id)" },
+          { name: "id", type: "INTEGER", pk: true, fk: false, nullable: false },
+          { name: "name", type: "TEXT", pk: false, fk: false, nullable: false },
+          { name: "type", type: "TEXT", pk: false, fk: false, nullable: false, default: "'POS'" },
+          { name: "firmware_version", type: "TEXT", pk: false, fk: false, nullable: true },
+          { name: "last_sync", type: "TEXT", pk: false, fk: false, nullable: true },
+        ]
+      },
+      business_accounts: {
+        category: "Core",
+        columns: [
+          { name: "id", type: "INTEGER", pk: true, fk: false, nullable: false },
+          { name: "account_number", type: "TEXT", pk: false, fk: false, nullable: false },
+          { name: "name", type: "TEXT", pk: false, fk: false, nullable: false },
+          { name: "contact_email", type: "TEXT", pk: false, fk: false, nullable: true },
+          { name: "payment_terms_days", type: "INTEGER", pk: false, fk: false, nullable: false, default: "30" },
+          { name: "credit_limit", type: "TEXT", pk: false, fk: false, nullable: true },
+          { name: "is_active", type: "INTEGER", pk: false, fk: false, nullable: false, default: "1" },
+        ]
+      },
+
+      // Transaction tables
+      transactions: {
+        category: "Transactions",
+        columns: [
+          { name: "id", type: "TEXT", pk: true, fk: false, nullable: false },
+          { name: "store_id", type: "INTEGER", pk: false, fk: true, nullable: false, ref: "stores(id)" },
+          { name: "device_id", type: "INTEGER", pk: false, fk: true, nullable: false, ref: "devices(id)" },
+          { name: "business_account_id", type: "INTEGER", pk: false, fk: true, nullable: true, ref: "business_accounts(id)" },
+          { name: "staff_id", type: "INTEGER", pk: false, fk: true, nullable: true, ref: "staff(id)" },
+          { name: "tx_timestamp", type: "TEXT", pk: false, fk: false, nullable: false },
+          { name: "tx_type", type: "TEXT", pk: false, fk: false, nullable: false, default: "'SALE'" },
+          { name: "subtotal", type: "TEXT", pk: false, fk: false, nullable: false },
+          { name: "tax_total", type: "TEXT", pk: false, fk: false, nullable: false },
+          { name: "discount_total", type: "TEXT", pk: false, fk: false, nullable: false },
+          { name: "grand_total", type: "TEXT", pk: false, fk: false, nullable: false },
+          { name: "rounding_adjustment", type: "TEXT", pk: false, fk: false, nullable: false, default: "'0.00'" },
+          { name: "source_format", type: "TEXT", pk: false, fk: false, nullable: false },
+          { name: "source_file", type: "TEXT", pk: false, fk: false, nullable: true },
+          { name: "imported_at", type: "TEXT", pk: false, fk: false, nullable: false, default: "CURRENT_TIMESTAMP" },
+        ]
+      },
+      transaction_lines: {
+        category: "Transactions",
+        columns: [
+          { name: "transaction_id", type: "TEXT", pk: true, fk: true, nullable: false, ref: "transactions(id)" },
+          { name: "line_number", type: "INTEGER", pk: true, fk: false, nullable: false },
+          { name: "item_code", type: "TEXT", pk: false, fk: true, nullable: false, ref: "items(item_code)" },
+          { name: "variant_code", type: "TEXT", pk: false, fk: true, nullable: false, ref: "item_variants(variant_code)" },
+          { name: "quantity", type: "TEXT", pk: false, fk: false, nullable: false },
+          { name: "unit_price", type: "TEXT", pk: false, fk: false, nullable: false },
+          { name: "line_total", type: "TEXT", pk: false, fk: false, nullable: false },
+          { name: "tax_group", type: "TEXT", pk: false, fk: false, nullable: false },
+          { name: "tax_rate", type: "TEXT", pk: false, fk: false, nullable: false },
+          { name: "tax_amount", type: "TEXT", pk: false, fk: false, nullable: false },
+          { name: "discount_amount", type: "TEXT", pk: false, fk: false, nullable: false, default: "'0.00'" },
+          { name: "discount_reason", type: "TEXT", pk: false, fk: false, nullable: true },
+          { name: "department_id", type: "INTEGER", pk: false, fk: true, nullable: true, ref: "departments(id)" },
+        ]
+      },
+      transaction_tenders: {
+        category: "Transactions",
+        columns: [
+          { name: "transaction_id", type: "TEXT", pk: true, fk: true, nullable: false, ref: "transactions(id)" },
+          { name: "tender_sequence", type: "INTEGER", pk: true, fk: false, nullable: false },
+          { name: "tender_type", type: "TEXT", pk: false, fk: false, nullable: false },
+          { name: "amount", type: "TEXT", pk: false, fk: false, nullable: false },
+          { name: "card_last4", type: "TEXT", pk: false, fk: false, nullable: true },
+          { name: "auth_code", type: "TEXT", pk: false, fk: false, nullable: true },
+          { name: "change_given", type: "TEXT", pk: false, fk: false, nullable: false, default: "'0.00'" },
+        ]
+      },
+      transaction_taxes: {
+        category: "Transactions",
+        columns: [
+          { name: "transaction_id", type: "TEXT", pk: true, fk: true, nullable: false, ref: "transactions(id)" },
+          { name: "tax_group", type: "TEXT", pk: true, fk: false, nullable: false },
+          { name: "taxable_amount", type: "TEXT", pk: false, fk: false, nullable: false },
+          { name: "tax_rate", type: "TEXT", pk: false, fk: false, nullable: false },
+          { name: "tax_amount", type: "TEXT", pk: false, fk: false, nullable: false },
+        ]
+      },
+      transaction_discounts: {
+        category: "Transactions",
+        columns: [
+          { name: "transaction_id", type: "TEXT", pk: true, fk: true, nullable: false, ref: "transactions(id)" },
+          { name: "discount_sequence", type: "INTEGER", pk: true, fk: false, nullable: false },
+          { name: "discount_type", type: "TEXT", pk: false, fk: false, nullable: false },
+          { name: "discount_code", type: "TEXT", pk: false, fk: false, nullable: true },
+          { name: "amount", type: "TEXT", pk: false, fk: false, nullable: false },
+          { name: "description", type: "TEXT", pk: false, fk: false, nullable: true },
+        ]
+      },
+
+      // Pricing tables
+      price_list: {
+        category: "Pricing",
+        columns: [
+          { name: "store_id", type: "INTEGER", pk: true, fk: true, nullable: false, ref: "stores(id)" },
+          { name: "item_code", type: "TEXT", pk: true, fk: true, nullable: false, ref: "items(item_code)" },
+          { name: "variant_code", type: "TEXT", pk: true, fk: true, nullable: false, ref: "item_variants(variant_code)" },
+          { name: "effective_date", type: "TEXT", pk: true, fk: false, nullable: false },
+          { name: "price", type: "TEXT", pk: false, fk: false, nullable: false },
+          { name: "promo_price", type: "TEXT", pk: false, fk: false, nullable: true },
+          { name: "promo_start", type: "TEXT", pk: false, fk: false, nullable: true },
+          { name: "promo_end", type: "TEXT", pk: false, fk: false, nullable: true },
+          { name: "source_file", type: "TEXT", pk: false, fk: false, nullable: true },
+          { name: "imported_at", type: "TEXT", pk: false, fk: false, nullable: false, default: "CURRENT_TIMESTAMP" },
+        ]
+      },
+      price_changes: {
+        category: "Pricing",
+        columns: [
+          { name: "id", type: "TEXT", pk: true, fk: false, nullable: false },
+          { name: "store_id", type: "INTEGER", pk: false, fk: true, nullable: false, ref: "stores(id)" },
+          { name: "item_code", type: "TEXT", pk: false, fk: true, nullable: false, ref: "items(item_code)" },
+          { name: "variant_code", type: "TEXT", pk: false, fk: true, nullable: false, ref: "item_variants(variant_code)" },
+          { name: "old_price", type: "TEXT", pk: false, fk: false, nullable: false },
+          { name: "new_price", type: "TEXT", pk: false, fk: false, nullable: false },
+          { name: "effective_date", type: "TEXT", pk: false, fk: false, nullable: false },
+          { name: "reason", type: "TEXT", pk: false, fk: false, nullable: false },
+          { name: "requested_by", type: "INTEGER", pk: false, fk: true, nullable: false, ref: "staff(id)" },
+          { name: "store_approved_by", type: "INTEGER", pk: false, fk: true, nullable: true, ref: "staff(id)" },
+          { name: "store_approved_at", type: "TEXT", pk: false, fk: false, nullable: true },
+          { name: "area_approved_by", type: "INTEGER", pk: false, fk: true, nullable: true, ref: "staff(id)" },
+          { name: "area_approved_at", type: "TEXT", pk: false, fk: false, nullable: true },
+          { name: "regional_approved_by", type: "INTEGER", pk: false, fk: true, nullable: true, ref: "staff(id)" },
+          { name: "regional_approved_at", type: "TEXT", pk: false, fk: false, nullable: true },
+          { name: "status", type: "TEXT", pk: false, fk: false, nullable: false, default: "'PENDING'" },
+          { name: "exported_at", type: "TEXT", pk: false, fk: false, nullable: true },
+          { name: "ack_status", type: "TEXT", pk: false, fk: false, nullable: true },
+          { name: "ack_received_at", type: "TEXT", pk: false, fk: false, nullable: true },
+        ]
+      },
+    };
+
+    const relationships = [
+      { from: "transactions.store_id", to: "stores.id", type: "FK" },
+      { from: "transactions.device_id", to: "devices.id", type: "FK (composite: store_id + device_id → devices.store_id + devices.id)" },
+      { from: "transactions.business_account_id", to: "business_accounts.id", type: "FK" },
+      { from: "transactions.staff_id", to: "staff.id", type: "FK" },
+      { from: "transaction_lines.transaction_id", to: "transactions.id", type: "FK" },
+      { from: "transaction_lines.item_code", to: "items.item_code", type: "FK" },
+      { from: "transaction_lines.variant_code", to: "item_variants.variant_code", type: "FK (composite: item_code + variant_code)" },
+      { from: "transaction_lines.department_id", to: "departments.id", type: "FK" },
+      { from: "transaction_tenders.transaction_id", to: "transactions.id", type: "FK" },
+      { from: "transaction_taxes.transaction_id", to: "transactions.id", type: "FK" },
+      { from: "transaction_discounts.transaction_id", to: "transactions.id", type: "FK" },
+      { from: "staff.store_id", to: "stores.id", type: "FK" },
+      { from: "devices.store_id", to: "stores.id", type: "FK (part of composite PK)" },
+      { from: "items.department_id", to: "departments.id", type: "FK" },
+      { from: "item_variants.item_code", to: "items.item_code", type: "FK" },
+      { from: "price_list.store_id", to: "stores.id", type: "FK (part of composite PK)" },
+      { from: "price_list.item_code", to: "items.item_code", type: "FK (part of composite PK)" },
+      { from: "price_list.variant_code", to: "item_variants.variant_code", type: "FK (part of composite PK)" },
+      { from: "price_changes.store_id", to: "stores.id", type: "FK" },
+      { from: "price_changes.item_code", to: "items.item_code", type: "FK" },
+      { from: "price_changes.variant_code", to: "item_variants.variant_code", type: "FK" },
+      { from: "price_changes.requested_by", to: "staff.id", type: "FK" },
+      { from: "price_changes.store_approved_by", to: "staff.id", type: "FK" },
+      { from: "price_changes.area_approved_by", to: "staff.id", type: "FK" },
+      { from: "price_changes.regional_approved_by", to: "staff.id", type: "FK" },
+    ];
+
+    // Render tables
+    const diagram = document.getElementById('diagram');
+    Object.entries(schema).forEach(([tableName, table]) => {
+      const card = document.createElement('div');
+      card.className = 'table-card';
+
+      const header = document.createElement('div');
+      header.className = 'table-header';
+      header.innerHTML = `
+        <span class="table-name">${tableName}</span>
+        <span class="table-category">${table.category}</span>
+      `;
+      card.appendChild(header);
+
+      const list = document.createElement('ul');
+      list.className = 'column-list';
+
+      table.columns.forEach(col => {
+        const li = document.createElement('li');
+        li.className = 'column';
+
+        let iconClass = 'regular';
+        let iconText = '';
+        if (col.pk && col.fk) { iconClass = 'pk'; iconText = 'PK/FK'; }
+        else if (col.pk) { iconClass = 'pk'; iconText = 'PK'; }
+        else if (col.fk) { iconClass = 'fk'; iconText = 'FK'; }
+
+        const nullable = col.nullable ? '<span class="col-nullable">◆ nullable</span>' : '';
+        const ref = col.ref ? `<span class="col-type">→ ${col.ref}</span>` : `<span class="col-type">${col.type}</span>`;
+
+        li.innerHTML = `
+          <span class="col-icon ${iconClass}">${iconText}</span>
+          <span class="col-name">${col.name}</span>
+          ${ref}
+          ${nullable}
+        `;
+        list.appendChild(li);
+      });
+
+      card.appendChild(list);
+      diagram.appendChild(card);
+    });
+
+    // Render relationships
+    const relContainer = document.getElementById('relationships');
+    relationships.forEach(rel => {
+      const div = document.createElement('div');
+      div.className = 'rel-item';
+      div.innerHTML = `<span class="fk">${rel.from}</span> <span class="arrow">→</span> <span class="pk">${rel.to}</span> <span style="color:var(--fg-muted);font-size:11px;">(${rel.type})</span>`;
+      relContainer.appendChild(div);
+    });
+  </script>
+</body>
+</html>

@@ -1,0 +1,88 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+.env
+.venv
+env/
+venv/
+ENV/
+env.bak/
+venv.bak/
+
+# Database
+*.db
+*.sqlite
+*.sqlite3
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Logs
+*.log
+logs/
+
+# Frontend
+frontend/node_modules/
+frontend/build/
+frontend/.cache/
+frontend/.env.local
+frontend/.env.development.local
+frontend/.env.test.local
+frontend/.env.production.local
+
+# Coverage
+coverage/
+*.cover
+.coverage
+.coverage.*
+nose2-json.xml
+
+# Testing
+.pytest_cache/
+.tox/
+.htmlcov/
+
+# Build
+*.pyc
+*.pyo
+*.pyd
+*.so
+*.o
+*.dylib
+
+# Local development
+local_settings.py
+settings_local.py
+
+# Data directories (runtime generated)
+/inbox/
+/outbox/
+/invoices/
+/backend/outbox/
+!data_package_extracted/
